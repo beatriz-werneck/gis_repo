@@ -1,0 +1,13 @@
+*.csv
+*.xlsx
+*.tif
+*.gpkg
+*.qgz
+*.shp
+statsnz-territorial-authority-2018-generalised-SHP/
+statistical-gis-boundaries-london/
+data_practical_2/
+wk2_homework_data/
+wk3_practical_data/
+wk3_hw_data/
+wk4_hw_data/
