@@ -4,6 +4,7 @@
 *.gpkg
 *.qgz
 *.shp
+*.DS_Store
 statsnz-territorial-authority-2018-generalised-SHP/
 statistical-gis-boundaries-london/
 data_practical_2/
