@@ -1,0 +1,70 @@
+---
+title: "Week 04 Homework: Global Gender Inequality Data"
+output: html_document
+---
+
+## The task this week is to:
+
+1) Read in global gender inequality data.
+2) Join the global gender inequality index to spatial data of the World, creating a new column of difference in inequality between 2010 and 2019.
+
+## Plan: 
+
+1) download gender inequality data csv
+2) download spatial data of the World geopackage 
+3) read in gender inequality data csv and world data shp
+4) transform the ISO3 in ISO2 using countrycode lib
+5) create a new column for the difference in inequality between 2010 and 2019
+6) left join the new column to the shp df  
+7) plot a qtm
+
+## Load packages
+
+```{r}
+library(countrycode)
+library(here)
+library(janitor)
+library(sf)
+library(tidyverse)
+library(tmap)
+library(tmaptools)
+```
+
+## Read in data
+
+```{r}
+gii_data <- read_csv(here("wk4_hw_data", "HDR25_Composite_indices_complete_time_series.csv"),
+         locale = locale(encoding = "latin1"),
+         na = "n/a")
+
+word_outline <- st_read(here("wk4_hw_data/World_Countries_(Generalized)_-573431906301700955", "World_Countries_Generalized.shp"))
+```
+
+## Wrangling data
+
+```{r}
+gii_edited <- gii_data %>% 
+  clean_names() %>% 
+  select(iso3, country, gii_2010, gii_2019) %>% 
+  mutate(iso2 = countrycode(iso3, origin = "iso3c", destination = "iso2c")) %>% 
+  mutate(gii_dif_2010_2019 = gii_2019 - gii_2010)
+
+word_out_edited <- word_outline[, -c(3,4)] 
+```
+
+## Join gii and world datas
+
+```{r}
+gii_spatial_data <- left_join(word_out_edited, gii_edited, by = c("ISO" = "iso2"))
+
+gii_sp_data_edited <- gii_spatial_data[,-c(3,4,5,6)]
+```
+
+## Ploting spatial data
+
+```{r}
+tmap_mode("plot")
+qtm(gii_sp_data_edited,
+    fill = "gii_dif_2010_2019",
+    title = "Gender Inequality Index difference between 2010 and 2019")
+```
